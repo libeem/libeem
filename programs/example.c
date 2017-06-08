@@ -41,7 +41,9 @@ int main(){
 	// Should not be fired
 	EEM_EMIT(&mo, 0, "Second emit!");
 
+	// Subscribing the event ID 1
 	EEM_ONCE(&mo, 1, cb, 0);
 
+	// Emitting the event ID 1
 	EEM_EMIT(&mo, 1, "Third emit!");
 }
