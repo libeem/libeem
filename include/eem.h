@@ -15,21 +15,21 @@ enum eem_lsn_flag {
 };
 
 struct eem_ev {
-	void *obj;
+	void *obj; // The struct that emitted the event
 	int ev;
-	void *data;
+	void *data; // Emitted data
 };
 
 struct eem_lsn {
 	int sub_ev; // Event to be subscribed
 	int flags;
-	eem_lsn_cb cb;
-	void *arg;
+	eem_lsn_cb cb; // Callback
+	void *arg; // Argument for the callback
 	struct eem_lsn *next;
 };
 
 struct eem {
-	struct eem_lsn *lsn;
+	struct eem_lsn *lsn; // Linked list of listeners
 };
 
 
