@@ -15,7 +15,7 @@ enum eem_lsn_flag {
 };
 
 struct eem_ev {
-	void *eem;
+	void *obj;
 	int ev;
 	void *data;
 };
@@ -42,13 +42,13 @@ struct eem {
 		_lsn->arg = _arg;						\
 	})
 
-#define EEM_INIT(_eem)								\
+#define EEM_INIT(obj)								\
 	({									\
-		memset(_eem, 0, sizeof(eem_t));					\
+		memset(&(obj)->eem, 0, sizeof(eem_t));				\
 	})
 
 
-#define EEM_ADD_LSN(_eem, _ev, _flags, _cb, _arg)				\
+#define EEM_ADD_LSN(obj, _ev, _flags, _cb, _arg)				\
 	({									\
 		eem_lsn_t *lsn;							\
 										\
@@ -56,22 +56,22 @@ struct eem {
 										\
 		EEM_LSN_INIT(lsn, _ev, _flags, _cb, _arg);			\
 										\
-		lsn->next = (_eem)->lsn;					\
-		(_eem)->lsn = lsn;						\
+		lsn->next = (obj)->eem.lsn;					\
+		(obj)->eem.lsn = lsn;						\
 		lsn;								\
 	})
 
-#define EEM_DEL_LSN(_eem, _lsn)							\
+#define EEM_DEL_LSN(obj, _lsn)							\
 	 ({									\
 		eem_lsn_t *cur, *prev;						\
 										\
 		prev = 0;							\
-		cur = (_eem)->lsn;						\
+		cur = (obj)->eem.lsn;						\
 										\
 		while (cur) {							\
 			if (cur == _lsn) {					\
 				if (prev) prev->next = cur->next;		\
-				else (_eem)->lsn = cur->next;			\
+				else (obj)->eem.lsn = cur->next;		\
 										\
 				free(cur);					\
 				break;						\
@@ -82,32 +82,32 @@ struct eem {
 										\
 	})
 
-#define EEM_ON(eem, ev, cb, arg)						\
-	({EEM_ADD_LSN(eem, ev, 0, cb, arg);})
+#define EEM_ON(obj, ev, cb, arg)						\
+	({EEM_ADD_LSN(obj, ev, 0, cb, arg);})
 
-#define EEM_ONCE(eem, ev, cb, arg) 						\
-	({EEM_ADD_LSN(eem, ev, EEM_LSN_FLAG_ONCE, cb, arg);})
+#define EEM_ONCE(obj, ev, cb, arg) 						\
+	({EEM_ADD_LSN(obj, ev, EEM_LSN_FLAG_ONCE, cb, arg);})
 
 
-#define EEM_EMIT(_eem, _ev, _data)						\
+#define EEM_EMIT(_obj, _ev, _data)						\
 	({									\
 		eem_ev_t event;							\
 		eem_lsn_t *cur, *tmp;						\
 										\
-		cur = (_eem)->lsn;						\
+		cur = (_obj)->eem.lsn;						\
 										\
 		while (cur) {							\
 			tmp = cur->next;					\
 										\
 			if (cur->sub_ev == _ev) {				\
-				event.eem = _eem;				\
+				event.obj = _obj;				\
 				event.ev = _ev;					\
 				event.data = _data;				\
 										\
 				cur->cb(&event, cur->arg);			\
 										\
 				if (cur->flags & EEM_LSN_FLAG_ONCE) {		\
-					EEM_DEL_LSN(_eem, cur);			\
+					EEM_DEL_LSN(_obj, cur);			\
 				}						\
 			}							\
 										\
