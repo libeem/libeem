@@ -42,13 +42,13 @@ struct eem {
 		_lsn->arg = _arg;						\
 	})
 
-#define EEM_INIT(obj)								\
+#define EEM_INIT(_obj)								\
 	({									\
-		memset(&(obj)->eem, 0, sizeof(eem_t));				\
+		memset(&(_obj)->eem, 0, sizeof(eem_t));				\
 	})
 
 
-#define EEM_ADD_LSN(obj, _ev, _flags, _cb, _arg)				\
+#define EEM_ADD_LSN(_obj, _ev, _flags, _cb, _arg)				\
 	({									\
 		eem_lsn_t *lsn;							\
 										\
@@ -56,22 +56,22 @@ struct eem {
 										\
 		EEM_LSN_INIT(lsn, _ev, _flags, _cb, _arg);			\
 										\
-		lsn->next = (obj)->eem.lsn;					\
-		(obj)->eem.lsn = lsn;						\
+		lsn->next = (_obj)->eem.lsn;					\
+		(_obj)->eem.lsn = lsn;						\
 		lsn;								\
 	})
 
-#define EEM_DEL_LSN(obj, _lsn)							\
+#define EEM_DEL_LSN(_obj, _lsn)							\
 	 ({									\
 		eem_lsn_t *cur, *prev;						\
 										\
 		prev = 0;							\
-		cur = (obj)->eem.lsn;						\
+		cur = (_obj)->eem.lsn;						\
 										\
 		while (cur) {							\
 			if (cur == _lsn) {					\
 				if (prev) prev->next = cur->next;		\
-				else (obj)->eem.lsn = cur->next;		\
+				else (_obj)->eem.lsn = cur->next;		\
 										\
 				free(cur);					\
 				break;						\
