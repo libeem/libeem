@@ -9,10 +9,10 @@ I created this project in order to make this process easier.
 ## How to use it?
 It is **REALLY** simple.  
 Just create a struct that contains an `eem_t` element with the `eem` name.  
-Like: ```C
-struct my_obj {
-	eem_t eem;
-	// Your data here.
+Like: ```
+struct my_obj {  
+	eem_t eem;  
+	// Your data here.  
 }  
 ```
 
