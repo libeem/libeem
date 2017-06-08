@@ -17,7 +17,6 @@ message("Current CMake build type is ${CMAKE_BUILD_TYPE}")
 
 include_directories("include" "${CMAKE_SOURCE_DIR}/ext/uthash/include")
 
-#add_subdirectory(src)
 add_subdirectory(programs)
 
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/eem" DESTINATION include)
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/eem.h" DESTINATION include)
