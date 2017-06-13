@@ -46,4 +46,9 @@ int main(){
 
 	// Emitting the event ID 1
 	EEM_EMIT(&mo, 1, "Third emit!");
+
+	// Never fired
+	EEM_ON(&mo, 1, cb, 0);
+
+	EEM_FREE(&mo);
 }
