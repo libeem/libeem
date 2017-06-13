@@ -47,6 +47,23 @@ struct eem {
 		memset(&(_obj)->eem, 0, sizeof(eem_t));				\
 	})
 
+#define EEM_FREE(_obj)								\
+	({									\
+		eem_lsn_t *cur, *tmp;						\
+										\
+		cur = (_obj)->eem.lsn;						\
+										\
+		while (cur) {							\
+			tmp = cur->next;					\
+										\
+			EEM_DEL_LSN((_obj), cur);				\
+										\
+			cur = tmp;						\
+		}								\
+										\
+		memset(&(_obj)->eem, 0, sizeof(eem_t));				\
+	})									\
+
 
 #define EEM_ADD_LSN(_obj, _ev, _flags, _cb, _arg)				\
 	({									\
